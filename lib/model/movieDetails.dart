@@ -64,8 +64,8 @@ void _favMovieDEL(BuildContext context, String id) async {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
-  bool isStarred = false;
-  bool isChecked = false;
+  bool favoritado = false;
+  bool assistido = false;
   final currentTimestamp = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
 
   @override
@@ -157,7 +157,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                       children: [
                                         IconButton(
                                           icon: Icon(
-                                            isStarred
+                                            favoritado
                                                 ? Icons.star
                                                 : Icons.star_border,
                                             color: Colors.yellow,
@@ -207,12 +207,12 @@ class _MovieDetailsState extends State<MovieDetails> {
                                                 setState(() {
                                                   _favMovieDEL(
                                                       context, fmovie.idIMDB);
-                                                  isStarred = false;
+                                                  favoritado = false;
                                                 });
                                               } else {
                                                 setState(() {
                                                   _favMovieADD(context, fmovie);
-                                                  isStarred = true;
+                                                  favoritado = true;
                                                 });
                                               }
                                             }).catchError((error) {
@@ -224,7 +224,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                         const SizedBox(width: 8),
                                         IconButton(
                                           icon: Icon(
-                                            isChecked
+                                            assistido
                                                 ? Icons.check_box
                                                 : Icons.check_box_outline_blank,
                                             color: Colors.yellow,
@@ -232,7 +232,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                           ),
                                           onPressed: () {
                                             setState(() {
-                                              if (!isChecked) {
+                                              if (!assistido) {
                                                 var smovie = MovieModel(
                                                   id: int.parse(
                                                       currentTimestamp),
@@ -262,11 +262,11 @@ class _MovieDetailsState extends State<MovieDetails> {
 
                                                 _seenMovieADD(context, smovie);
 
-                                                isChecked = !isChecked;
+                                                assistido = !assistido;
                                               } else {
                                                 _seenMovieDEL(context,
                                                     snapshot.data!.first.id);
-                                                isChecked = !isChecked;
+                                                assistido = !assistido;
                                               }
                                             });
                                           },

@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:prova_final/model/session.dart';
-import 'package:prova_final/persistence/movie_model.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../login/login.dart';
 import '../scripts/queriessql.dart';
 import 'editProfile.dart';
-import 'movieDetails.dart';
 import 'movie_class.dart';
-import '../model/movie_class.dart';
 
 class Profile extends StatefulWidget {
   final String? user;
-  Profile({Key? key, this.user}) : super(key: key);
+  const Profile({Key? key, this.user}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -43,7 +38,6 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
 
     var sm = Filme(
@@ -75,7 +69,7 @@ class _ProfileState extends State<Profile> {
         year: '');
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 99, 99, 99),
+      backgroundColor: Colors.black,
       body: Column(
         children: [
           Container(
@@ -84,6 +78,8 @@ class _ProfileState extends State<Profile> {
                 image: AssetImage("assets/images/background.jpg"),
                 fit: BoxFit.cover,
               ),
+              border: Border(
+                bottom: BorderSide(color: Colors.yellow, width: 5)),
             ),
             child: Stack(
               children: <Widget>[
@@ -190,185 +186,187 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          Container(
-            decoration: const BoxDecoration(),
-            height: 50,
-            child: const Row(
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
               children: [
-                Icon(Icons.star),
-                SizedBox(width: 4),
-                Text('Filmes favoritos'),
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    children: [
+                      Text(
+                        "Filmes Favoritos",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 2,),
+                      Icon(Icons.star, color: Colors.yellow,),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 2,),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                  ),
+                  height: 120,
+                  child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: DBHelper.getFavs(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return GridView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data!.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                          ),
+                          itemBuilder: (context, index) {
+                            final favsMap = snapshot.data![index];
+                            final uniqueKey = ValueKey(favsMap['id']);
+
+                            fm.id = favsMap['id'].toString();
+                            fm.title = favsMap['title'];
+                            fm.fulltitle = favsMap['fulltitle'];
+                            fm.rating = 1;
+                            fm.image = favsMap['image'];
+                            fm.releasedate = favsMap['releasedate'];
+                            fm.year = favsMap['year'];
+                            fm.genres = favsMap['genres'];
+                            fm.plot = favsMap['plot'];
+                            fm.genres = favsMap['genres'];
+                            fm.directors = favsMap['directors'];
+                            fm.actors = favsMap['actors'];
+                            fm.runtime = favsMap['runtime'];
+
+                             return Padding(
+                              key: uniqueKey,
+                              padding: const EdgeInsets.all(5),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: Image.network(
+                                      favsMap['image'],
+                                    fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                             ),
+                            );
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      }
+                      return const CircularProgressIndicator();
+                    },
+                  ),
+                ),
               ],
             ),
           ),
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            height: 120,
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: DBHelper.getFavs(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return GridView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data!.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                    ),
-                    itemBuilder: (context, index) {
-                      final favsMap = snapshot.data![index];
-                      final uniqueKey = ValueKey(favsMap['id']);
-
-                      fm.id = favsMap['id'].toString();
-                      fm.title = favsMap['title'];
-                      fm.fulltitle = favsMap['fulltitle'];
-                      fm.rating = 1;
-                      fm.image = favsMap['image'];
-                      fm.releasedate = favsMap['releasedate'];
-                      fm.year = favsMap['year'];
-                      fm.genres = favsMap['genres'];
-                      fm.plot = favsMap['plot'];
-                      fm.genres = favsMap['genres'];
-                      fm.directors = favsMap['directors'];
-                      fm.actors = favsMap['actors'];
-                      fm.runtime = favsMap['runtime'];
-
-                      return Padding(
-                        key: uniqueKey,
-                        padding: const EdgeInsets.all(5),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          /*child: InkWell(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MovieDetails(
-                                      movie: fm,
-                                    ),
-                                  ),
-                                );
-                              },*/
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                              ),
-                            ),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.network(
-                                favsMap['image'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          /*),
-                          ),*/
-                        ),
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                }
-                return CircularProgressIndicator();
-              },
-            ),
+          const Divider(
+            color: Colors.yellow,
+            thickness: 5,
           ),
-          Container(
-            decoration: const BoxDecoration(),
-            height: 50,
-            child: const Row(
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
               children: [
-                Icon(Icons.check_box),
-                SizedBox(width: 4),
-                Text('Filmes Assistidos'),
-              ],
-            ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            height: 120,
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: DBHelper.getSeen(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return GridView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data!.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    children: [
+                      Text(
+                        "Filmes Assistidos",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 2,),
+                      Icon(Icons.check_box, color: Colors.yellow,),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 2,),
+                Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black,
                     ),
-                    itemBuilder: (context, index) {
-                      final seenMap = snapshot.data![index];
-                      final uniqueKey = ValueKey(seenMap['id']);
+                    height: 120,
+                    child: FutureBuilder<List<Map<String, dynamic>>>(
+                      future: DBHelper.getSeen(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return GridView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                            ),
+                            itemBuilder: (context, index) {
+                              final seenMap = snapshot.data![index];
+                              final uniqueKey = ValueKey(seenMap['id']);
 
-                      sm.id = seenMap['id'].toString();
-                      sm.title = seenMap['title'];
-                      sm.fulltitle = seenMap['fulltitle'];
-                      sm.rating = 1;
-                      sm.image = seenMap['image'];
-                      sm.releasedate = seenMap['releasedate'];
-                      sm.year = seenMap['year'];
-                      sm.genres = seenMap['genres'];
-                      sm.plot = seenMap['plot'];
-                      sm.directors = seenMap['directors'];
-                      sm.actors = seenMap['actors'];
-                      sm.runtime = seenMap['runtime'];
+                              sm.id = seenMap['id'].toString();
+                              sm.title = seenMap['title'];
+                              sm.fulltitle = seenMap['fulltitle'];
+                              sm.rating = 1;
+                              sm.image = seenMap['image'];
+                              sm.releasedate = seenMap['releasedate'];
+                              sm.year = seenMap['year'];
+                              sm.genres = seenMap['genres'];
+                              sm.plot = seenMap['plot'];
+                              sm.directors = seenMap['directors'];
+                              sm.actors = seenMap['actors'];
+                              sm.runtime = seenMap['runtime'];
 
-                      return Padding(
-                        key: uniqueKey,
-                        padding: const EdgeInsets.all(5),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          /*child: InkWell(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MovieDetails(
-                                      movie: sm,
+                              return Padding(
+                                key: uniqueKey,
+                                padding: const EdgeInsets.all(5),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: Image.network(
+                                        seenMap['image'],
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                );
-                              },*/
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                              ),
-                            ),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.network(
-                                seenMap['image'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          /* ),
-                          ),*/
-                        ),
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                }
-                return CircularProgressIndicator();
-              },
+                                ),
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        }
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                  ),
+              ],
             ),
           ),
         ],

@@ -57,7 +57,7 @@ class DBHelper {
         ''');
         return db;
       },
-      version: 3,
+      version: 4,
     );
     return database;
   }

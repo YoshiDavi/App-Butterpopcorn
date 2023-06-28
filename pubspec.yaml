@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dio: ^5.1.2
   sqflite: ^2.2.8+4
-  shared_preferences: ^2.0.8
+  shared_preferences: ^2.1.2
   intl: ^0.18.1
 
 dev_dependencies:

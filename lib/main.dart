@@ -7,11 +7,21 @@ import 'login/insertUser.dart';
 import 'login/login.dart';
 import 'model/profile.dart';
 
+/*
+Integrantes:
+- Davi Santos Pereira
+- Jessica Rodrigues
+- Bianca Catanni
+- Guilherme Barros
+*/
+
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,12 +32,12 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color.fromRGBO(255, 215, 0, 1)),
       initialRoute: '/login',
       routes: {
-        '/': (context) => LoginScreen(),
+        '/login': (context) => LoginScreen(),
         '/insert': (context) => AddedUser(),
         '/home': (context) => const HomeButterPopCorn(),
         '/search': (context) => const Search(),
         '/movies': (context) => const Movies(),
-        '/profile': (context) => Profile(),
+        '/profile': (context) => const Profile(),
         '/editprofile': (context) => EditProfile(),
       },
     );

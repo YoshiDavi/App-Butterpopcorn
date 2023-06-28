@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../persistence/clientUpdate_model.dart';
-import '../persistence/client_model.dart';
 import '../scripts/queriessql.dart';
 
 class ChangePassword extends StatelessWidget {
@@ -10,10 +8,11 @@ class ChangePassword extends StatelessWidget {
   final TextEditingController _passwordControllerVerify =
       TextEditingController();
 
+  ChangePassword({super.key});
+
   void _updateUser(BuildContext context) async {
     String name = _nameController.text;
     String password = _passwordController.text;
-    String passwordVerify = _passwordControllerVerify.text;
     String photo = "";
 
     var user = UserUpdateModel(
@@ -42,6 +41,7 @@ class ChangePassword extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,

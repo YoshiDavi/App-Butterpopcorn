@@ -1,7 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import 'package:prova_final/main.dart';
 import 'package:sqflite/sqlite_api.dart';
 import '../model/home_page.dart';
 import '../model/session.dart';
@@ -12,6 +9,8 @@ import 'insertUser.dart';
 class LoginScreen extends StatelessWidget {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  LoginScreen({super.key});
 
   void _login(BuildContext context) async {
     String user = _userController.text;

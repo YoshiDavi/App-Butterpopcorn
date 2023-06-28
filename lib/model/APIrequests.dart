@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'movie_class.dart';
 
@@ -11,7 +9,7 @@ final Map<String, String> getTop250Headers = {
   "Content-Type": "application/json",
 };
 
-String key = 'k_pnum0r2f';
+String key = 'k_75gqaa11';
 
 String url = "imdb-api.com";
 

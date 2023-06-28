@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prova_final/persistence/client_model.dart';
-
 import '../scripts/queriessql.dart';
 
 class AddedUser extends StatelessWidget {
@@ -10,11 +9,12 @@ class AddedUser extends StatelessWidget {
   final TextEditingController _passwordControllerVerify =
       TextEditingController();
 
+  AddedUser({super.key});
+
   void _registerUser(BuildContext context) async {
     String nome = _nameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
-    String passwordVerify = _passwordControllerVerify.text;
     String photo = "";
 
     var user = UsersModel(
@@ -45,6 +45,7 @@ class AddedUser extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,

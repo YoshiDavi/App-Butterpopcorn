@@ -1,9 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:prova_final/model/movieDetails.dart';
-
 import '../model/APIrequests.dart';
 import '../model/movie_class.dart';
 
@@ -66,9 +62,9 @@ class Movies extends StatelessWidget {
               },
             );
           } else if (snapshot.hasError) {
-            return Text("Error");
+            return const Text("Error");
           }
-          return Text("Loading...");
+          return const Text("Loading...");
         },
       ),
     );

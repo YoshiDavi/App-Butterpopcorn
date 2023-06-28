@@ -28,7 +28,7 @@ void _seenMovieADD(BuildContext context, MovieModel sm) async {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('OK'),
+          child: const Text('OK'),
         ),
       ],
     ),
@@ -52,7 +52,7 @@ void _favMovieADD(BuildContext context, MovieModel fm) async {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('OK'),
+          child: const Text('OK'),
         ),
       ],
     ),
@@ -115,7 +115,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                           padding: const EdgeInsets.all(25),
                           child: Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 150,
                                 child: Image.network(
                                   snapshot.data!.first.image,
@@ -280,7 +280,6 @@ class _MovieDetailsState extends State<MovieDetails> {
                           ),
                         ),
                         const Divider(
-                          // Linha amarela
                           color: Colors.yellow,
                           thickness: 2,
                         ),
@@ -306,7 +305,6 @@ class _MovieDetailsState extends State<MovieDetails> {
                           ),
                         ),
                         const Divider(
-                          // Linha amarela
                           color: Colors.yellow,
                           thickness: 2,
                         ),

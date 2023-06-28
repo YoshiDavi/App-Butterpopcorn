@@ -11,12 +11,13 @@ final Map<String, String> getTop250Headers = {
   "Content-Type": "application/json",
 };
 
-String key = 'k_5pozbewv';
+String key = 'k_pnum0r2f';
 
 String url = "imdb-api.com";
 
 Future<List<Filme>> searchMovie(String search) async {
-  final response = await dio.get('https://imdb-api.com/en/API/SearchMovie/$key/$search');
+  final response =
+      await dio.get('https://imdb-api.com/pt-BR/API/SearchMovie/$key/$search');
 
   if (response.statusCode == 200) {
     var jsonResponse = response.data['results'];
@@ -25,8 +26,11 @@ Future<List<Filme>> searchMovie(String search) async {
 
     for (var m in jsonResponse) {
       if (m != null) {
-        Filme movie = Filme.fromJson(m);
-        movies.add(movie);
+        if (m['image'].toString().isNotEmpty &&
+            m['title'].toString().isNotEmpty) {
+          Filme movie = Filme.fromJson(m);
+          movies.add(movie);
+        }
       }
     }
     return movies;

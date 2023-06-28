@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 
 import '../persistence/clientUpdate_model.dart';
 import '../persistence/client_model.dart';
+import '../persistence/movie_model.dart';
 
 class DBHelper {
   static Future<Database> database() async {
@@ -11,7 +12,7 @@ class DBHelper {
     final database = openDatabase(
       join(await getDatabasesPath(), 'butterpopcorn.db'),
       onCreate: (db, version) {
-        return db.execute('''
+        db.execute('''
           CREATE TABLE IF NOT EXISTS Users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT,
@@ -20,10 +21,123 @@ class DBHelper {
             imagem TEXT
           )
         ''');
+        db.execute('''
+          CREATE TABLE IF NOT EXISTS Favs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            idIMDB TEXT,
+            title TEXT,
+            fulltitle TEXT,
+            rating REAL,
+            image TEXT,
+            releasedate TEXT,
+            year TEXT,
+            genres TEXT,
+            plot TEXT,
+            directors TEXT,
+            actors TEXT,
+            runtime TEXT
+          )
+        ''');
+        db.execute('''
+          CREATE TABLE IF NOT EXISTS Seen (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            idIMDB TEXT,
+            title TEXT,
+            fulltitle TEXT,
+            rating REAL,
+            image TEXT,
+            releasedate TEXT,
+            year TEXT,
+            genres TEXT,
+            plot TEXT,
+            directors TEXT,
+            actors TEXT,
+            runtime TEXT
+          )
+        ''');
+        return db;
       },
-      version: 1,
+      version: 3,
     );
     return database;
+  }
+
+  static Future<List<Map<String, dynamic>>> getFavs() async {
+    var database = await DBHelper.database();
+    final db = database;
+
+    List<Map<String, dynamic>> maps = await db.query('Favs');
+
+    return maps;
+  }
+
+  static Future<List<Map<String, dynamic>>> getSeen() async {
+    var database = await DBHelper.database();
+    final db = database;
+
+    List<Map<String, dynamic>> maps = await db.query('Seen');
+
+    return maps;
+  }
+
+  static Future<void> insertFavMovie(MovieModel movieModel) async {
+    try {
+      var database = await DBHelper.database();
+      final db = database;
+
+      await db.insert(
+        'Favs',
+        movieModel.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      List<Map<String, dynamic>> maps = await db.query('Favs');
+      print('Total records: ${maps.length}');
+      print('Records: $maps');
+    } catch (e) {
+      print('Error inserting record: $e');
+    }
+  }
+
+  static Future<void> insertSeenMovie(MovieModel movieModel) async {
+    try {
+      var database = await DBHelper.database();
+      final db = database;
+
+      await db.insert(
+        'Seen',
+        movieModel.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+
+      List<Map<String, dynamic>> maps = await db.query('Seen');
+      print('Total records: ${maps.length}');
+      print('Records: $maps');
+    } catch (e) {
+      print('Error inserting record: $e');
+    }
+  }
+
+  static Future<void> deleteFmovie(String id) async {
+    var database = DBHelper.database();
+    final db = await database;
+
+    await db.delete(
+      'Favs',
+      where: 'idIMDB = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<void> deleteSmovie(String id) async {
+    var database = DBHelper.database();
+    final db = await database;
+
+    await db.delete(
+      'Seen',
+      where: 'idIMDB = ?',
+      whereArgs: [id],
+    );
   }
 
   static Future<void> insertUser(UsersModel usersModel) async {
@@ -50,7 +164,7 @@ class DBHelper {
     );
   }
 
-  static Future<void> updateUserId(UserUpdateModel user, int id ) async {
+  static Future<void> updateUserId(UserUpdateModel user, int id) async {
     var database = DBHelper.database();
     final db = await database;
 

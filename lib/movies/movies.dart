@@ -35,33 +35,34 @@ class Movies extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                     child: InkWell(
                       child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MovieDetails(
-                              movie: snapshot.data![index],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MovieDetails(
+                                movie: snapshot.data![index],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1.0,
                             ),
                           ),
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1.0,
-                          ),
-                        ),
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Image.network(
-                            snapshot.data![index].image,
-                            fit: BoxFit.cover,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Image.network(
+                              snapshot.data![index].image,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),);
+                );
               },
             );
           } else if (snapshot.hasError) {

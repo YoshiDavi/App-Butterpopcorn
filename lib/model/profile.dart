@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:prova_final/model/session.dart';
+import 'package:prova_final/persistence/movie_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../login/login.dart';
 import '../scripts/queriessql.dart';
 import 'editProfile.dart';
+import 'movieDetails.dart';
+import 'movie_class.dart';
+import '../model/movie_class.dart';
 
 class Profile extends StatefulWidget {
   final String? user;
@@ -41,117 +46,332 @@ class _ProfileState extends State<Profile> {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
 
+    var sm = Filme(
+        actors: '',
+        directors: '',
+        fulltitle: '',
+        genres: '',
+        id: '',
+        image: '',
+        plot: '',
+        rating: 0.0,
+        releasedate: '',
+        runtime: '',
+        title: '',
+        year: '');
+    ;
+    var fm = Filme(
+        actors: '',
+        directors: '',
+        fulltitle: '',
+        genres: '',
+        id: '',
+        image: '',
+        plot: '',
+        rating: 0.0,
+        releasedate: '',
+        runtime: '',
+        title: '',
+        year: '');
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 99, 99, 99),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/background.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: EdgeInsets.only(top: _height / 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage:
-                          const AssetImage('assets/images/test.jpg'),
-                      radius: _height / 12,
-                    ),
-                    SizedBox(
-                      height: _height / 200,
-                    ),
-                    Text(
-                      nome,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(2, 2),
-                            blurRadius: 3,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: _height / 50,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      EditProfile(user: widget.user!),
-                                ),
-                              );
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.black),
-                            ),
-                            child: Row(
-                              children: const [
-                                Icon(Icons.edit),
-                                SizedBox(width: 4),
-                                Text('Editar Perfil'),
-                              ],
-                            ),
+      body: Column(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/background.jpg"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: _height / 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        CircleAvatar(
+                          backgroundImage:
+                              const AssetImage('assets/images/test.jpg'),
+                          radius: _height / 12,
+                        ),
+                        SizedBox(
+                          height: _height / 200,
+                        ),
+                        Text(
+                          nome,
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset(2, 2),
+                                blurRadius: 3,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: 10),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
+                        SizedBox(
+                          height: _height / 50,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  await Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditProfile(user: widget.user!),
+                                    ),
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.black),
                                 ),
-                              );
-                              await SessionManager.logout();
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.black),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.edit),
+                                    SizedBox(width: 4),
+                                    Text('Editar Perfil'),
+                                  ],
+                                ),
+                              ),
                             ),
-                            child: Row(
-                              children: const [
-                                Icon(Icons.logout),
-                                SizedBox(width: 4),
-                                Text('Logout'),
-                              ],
+                            const SizedBox(width: 10),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginScreen(),
+                                    ),
+                                  );
+                                  await SessionManager.logout();
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.black),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.logout),
+                                    SizedBox(width: 4),
+                                    Text('Logout'),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.only(top: _height / 2.6),
+                  child: Container(
+                    color: Colors.black,
+                  ),
+                )
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.only(top: _height / 2.6),
-              child: Container(
-                color: Colors.black,
-              ),
-            )
-          ],
-        ),
+          ),
+          Container(
+            decoration: const BoxDecoration(),
+            height: 50,
+            child: const Row(
+              children: [
+                Icon(Icons.star),
+                SizedBox(width: 4),
+                Text('Filmes favoritos'),
+              ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            height: 120,
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: DBHelper.getFavs(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 10.0,
+                    ),
+                    itemBuilder: (context, index) {
+                      final favsMap = snapshot.data![index];
+                      final uniqueKey = ValueKey(favsMap['id']);
+
+                      fm.id = favsMap['id'].toString();
+                      fm.title = favsMap['title'];
+                      fm.fulltitle = favsMap['fulltitle'];
+                      fm.rating = 1;
+                      fm.image = favsMap['image'];
+                      fm.releasedate = favsMap['releasedate'];
+                      fm.year = favsMap['year'];
+                      fm.genres = favsMap['genres'];
+                      fm.plot = favsMap['plot'];
+                      fm.genres = favsMap['genres'];
+                      fm.directors = favsMap['directors'];
+                      fm.actors = favsMap['actors'];
+                      fm.runtime = favsMap['runtime'];
+
+                      return Padding(
+                        key: uniqueKey,
+                        padding: const EdgeInsets.all(5),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          /*child: InkWell(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MovieDetails(
+                                      movie: fm,
+                                    ),
+                                  ),
+                                );
+                              },*/
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1.0,
+                              ),
+                            ),
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Image.network(
+                                favsMap['image'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          /*),
+                          ),*/
+                        ),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                }
+                return CircularProgressIndicator();
+              },
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(),
+            height: 50,
+            child: const Row(
+              children: [
+                Icon(Icons.check_box),
+                SizedBox(width: 4),
+                Text('Filmes Assistidos'),
+              ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            height: 120,
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: DBHelper.getSeen(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return GridView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 10.0,
+                    ),
+                    itemBuilder: (context, index) {
+                      final seenMap = snapshot.data![index];
+                      final uniqueKey = ValueKey(seenMap['id']);
+
+                      sm.id = seenMap['id'].toString();
+                      sm.title = seenMap['title'];
+                      sm.fulltitle = seenMap['fulltitle'];
+                      sm.rating = 1;
+                      sm.image = seenMap['image'];
+                      sm.releasedate = seenMap['releasedate'];
+                      sm.year = seenMap['year'];
+                      sm.genres = seenMap['genres'];
+                      sm.plot = seenMap['plot'];
+                      sm.directors = seenMap['directors'];
+                      sm.actors = seenMap['actors'];
+                      sm.runtime = seenMap['runtime'];
+
+                      return Padding(
+                        key: uniqueKey,
+                        padding: const EdgeInsets.all(5),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          /*child: InkWell(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MovieDetails(
+                                      movie: sm,
+                                    ),
+                                  ),
+                                );
+                              },*/
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1.0,
+                              ),
+                            ),
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Image.network(
+                                seenMap['image'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          /* ),
+                          ),*/
+                        ),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                }
+                return CircularProgressIndicator();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

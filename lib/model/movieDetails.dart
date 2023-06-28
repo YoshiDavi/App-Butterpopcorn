@@ -164,41 +164,60 @@ class _MovieDetailsState extends State<MovieDetails> {
                                             size: 30,
                                           ),
                                           onPressed: () {
-                                            setState(() {
-                                              if (isStarred == false) {
-                                                var fmovie = MovieModel(
-                                                    id: int.parse(
-                                                        currentTimestamp),
-                                                    idIMDB: widget.movie.id,
-                                                    title: snapshot
-                                                        .data!.first.title,
-                                                    fulltitle: snapshot
-                                                        .data!.first.fulltitle,
-                                                    image: snapshot
-                                                        .data!.first.image,
-                                                    releasedate: snapshot.data!
-                                                        .first.releasedate,
-                                                    year: snapshot
-                                                        .data!.first.year,
-                                                    genres: snapshot
-                                                        .data!.first.genres,
-                                                    plot: snapshot
-                                                        .data!.first.plot,
-                                                    directors: snapshot
-                                                        .data!.first.directors,
-                                                    actors: snapshot
-                                                        .data!.first.actors,
-                                                    runtime: snapshot
-                                                        .data!.first.runtime);
+                                            var fmovie = MovieModel(
+                                              id: int.parse(currentTimestamp),
+                                              idIMDB: widget.movie.id,
+                                              title: snapshot.data!.first.title,
+                                              fulltitle: snapshot
+                                                  .data!.first.fulltitle,
+                                              image: snapshot.data!.first.image,
+                                              releasedate: snapshot
+                                                  .data!.first.releasedate,
+                                              year: snapshot.data!.first.year,
+                                              genres:
+                                                  snapshot.data!.first.genres,
+                                              plot: snapshot.data!.first.plot,
+                                              directors: snapshot
+                                                  .data!.first.directors,
+                                              actors:
+                                                  snapshot.data!.first.actors,
+                                              runtime:
+                                                  snapshot.data!.first.runtime,
+                                            );
 
-                                                _favMovieADD(context, fmovie);
+                                            Future<List<Map<String, dynamic>>>
+                                                map = DBHelper.getFavs();
 
-                                                isStarred = !isStarred;
-                                              } else {
-                                                _favMovieDEL(context,
-                                                    snapshot.data!.first.id);
-                                                isStarred = !isStarred;
+                                            map.then((list) {
+                                              String campo = 'idIMDB';
+                                              String valor =
+                                                  snapshot.data!.first.id;
+
+                                              bool recordExists = false;
+
+                                              for (var m in list) {
+                                                if (m.containsKey(campo) &&
+                                                    m[campo] == valor) {
+                                                  recordExists = true;
+                                                  break;
+                                                }
                                               }
+
+                                              if (recordExists) {
+                                                setState(() {
+                                                  _favMovieDEL(
+                                                      context, fmovie.idIMDB);
+                                                  isStarred = false;
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  _favMovieADD(context, fmovie);
+                                                  isStarred = true;
+                                                });
+                                              }
+                                            }).catchError((error) {
+                                              print(
+                                                  "Error requesting the map: $error");
                                             });
                                           },
                                         ),
@@ -215,30 +234,31 @@ class _MovieDetailsState extends State<MovieDetails> {
                                             setState(() {
                                               if (!isChecked) {
                                                 var smovie = MovieModel(
-                                                    id: int.parse(
-                                                        currentTimestamp),
-                                                    idIMDB:
-                                                        snapshot.data!.first.id,
-                                                    title: snapshot
-                                                        .data!.first.title,
-                                                    fulltitle: snapshot
-                                                        .data!.first.fulltitle,
-                                                    image: snapshot
-                                                        .data!.first.image,
-                                                    releasedate: snapshot.data!
-                                                        .first.releasedate,
-                                                    year: snapshot
-                                                        .data!.first.year,
-                                                    genres: snapshot
-                                                        .data!.first.genres,
-                                                    plot: snapshot
-                                                        .data!.first.plot,
-                                                    directors: snapshot
-                                                        .data!.first.directors,
-                                                    actors: snapshot
-                                                        .data!.first.actors,
-                                                    runtime: snapshot
-                                                        .data!.first.runtime);
+                                                  id: int.parse(
+                                                      currentTimestamp),
+                                                  idIMDB:
+                                                      snapshot.data!.first.id,
+                                                  title: snapshot
+                                                      .data!.first.title,
+                                                  fulltitle: snapshot
+                                                      .data!.first.fulltitle,
+                                                  image: snapshot
+                                                      .data!.first.image,
+                                                  releasedate: snapshot
+                                                      .data!.first.releasedate,
+                                                  year:
+                                                      snapshot.data!.first.year,
+                                                  genres: snapshot
+                                                      .data!.first.genres,
+                                                  plot:
+                                                      snapshot.data!.first.plot,
+                                                  directors: snapshot
+                                                      .data!.first.directors,
+                                                  actors: snapshot
+                                                      .data!.first.actors,
+                                                  runtime: snapshot
+                                                      .data!.first.runtime,
+                                                );
 
                                                 _seenMovieADD(context, smovie);
 
